@@ -8,6 +8,10 @@ const bodyParser=require('body-parser');
 
 const db=require('./util/database')
 
+const users=require('./model/users');
+
+const messages=require('./model/messages');
+
 const cors=require('cors');
 
 const alert=require('alert')
@@ -23,6 +27,9 @@ app.use(router);
 app.use(express.static('views'));
 
 db.sync();
+
+users.hasMany(messages);
+messages.belongsTo(users);
 
 app.listen(9000,()=>{
     console.log('Running on Port 9000');
