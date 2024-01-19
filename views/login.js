@@ -8,7 +8,8 @@ async function login(e){
         }
         const resp=await axios.post('http://localhost:9000/login',details)
         alert(resp.data.message);
-        location.reload();
+        localStorage.setItem('token',resp.data.token);
+        window.location.href='./chat.html';
     }catch(err){
         if(err=='AxiosError: Request failed with status code 404'){
             alert('User does not existed')
