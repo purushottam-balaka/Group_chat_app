@@ -12,7 +12,7 @@ async function signup_details(e){
         await axios.post('http://localhost:9000/signup',details)
         .then((resp)=>{
             alert(resp.data.message)
-            location.redirect('/login')
+            window.location.href='./login.html'
         })
         .catch(err=>{
             console.log(err)

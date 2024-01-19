@@ -1,6 +1,7 @@
 const bcrypt=require('bcrypt');
 const users=require('../model/users');
-const alert=require('alert')
+const alert=require('alert');
+const jwt=require('jsonwebtoken');
 
 exports.home=(req,res)=>{
     res.sendFile(process.cwd()+'/views/login.html');
@@ -14,7 +15,7 @@ exports.signup=async(req,res,next)=>{
         const phone=req.body.phone;
         const uniqueMail=await users.findAll({where:{email:email}});
         if(uniqueMail.length!=0){
-            res.status(200).json({message:'User already existed'});
+            return res.status(409).json({message:'User already existed'});
         }
         else{
             const saltRounds=10;
@@ -52,17 +53,24 @@ exports.login=async(req,res,next)=>{
         if(uniqueMail.length!=0){
             bcrypt.compare(password,uniqueMail[0].password, (err,result)=>{
                 if(err)
-                    res.json({message:"Something went wrong"});
+                    return res.json({message:"Something went wrong"});
                 else if(result==true){
-                    res.status(200).json({message:"User logedin succssfully"})
+                    const gen=generateToken(uniqueMail[0].id)
+                    return res.status(200).json({message:"User logedin succssfully",token:gen});
                 }else{
-                    res.json({message:"You have entered wrong password"})
+                    return  res.status(401).json({message:"You have entered wrong password"})
                 }
             })
+        }else{
+            return res.status(404).json({message:"User does not existed"});
         }
     }catch(err){
         console.log(err)
     }
    
 
+}
+
+function generateToken(id){
+    return jwt.sign({UserId:id},'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9');
 }

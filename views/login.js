@@ -1,3 +1,4 @@
+
 async function login(e){
     try{
         e.preventDefault();
@@ -9,7 +10,15 @@ async function login(e){
         alert(resp.data.message);
         location.reload();
     }catch(err){
-        console.log(err);
+        if(err=='AxiosError: Request failed with status code 404'){
+            alert('User does not existed')
+            }
+        else if(err=='AxiosError: Request failed with status code 401'){
+            alert("You have entered wrong password")
+        }
+        else{
+            alert("Something went wrong")
+        }
     }
 }
 
