@@ -1,3 +1,4 @@
+
 window.addEventListener('DOMContentLoaded',async()=>{
     try{
         const token=localStorage.getItem('token');
@@ -18,7 +19,14 @@ async function save_message(e){
             message:e.target.message.value,
         }
         const token=localStorage.getItem('token');
-        const resp= await axios.post('http://localhost:9000/add_message',data,{headers:{'Authorization':token}})
+        await axios.post('http://localhost:9000/add_message',data,{headers:{'Authorization':token}})
+        .then((resp)=>{
+            window.location.reload();
+            // console.log('reloaded')
+        }).catch((err)=>{
+            console.log(err)
+        })
+       
     }catch(err){
         console.log(err)
     }
@@ -27,6 +35,7 @@ async function save_message(e){
 function showMessage(item){
     const parentEle=document.getElementById('list');
     const childEle=document.createElement('li');
-    childEle.textContent=item.message;
+    childEle.setAttribute('class','list-group-item')
+    childEle.textContent=item.user.name +' : '+ item.message;
     parentEle.append(childEle)
 }

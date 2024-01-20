@@ -16,6 +16,18 @@ exports.addMessage=async(req,res,next)=>{
 }
 
 exports.getMessage=async(req,res,next)=>{
-    const msg=await messages.findAll()
-    return res.status(200).json({msg:msg});
+
+    await messages.findAll({
+        include:[{
+            model:users,
+            required:true,
+        }]
+    })
+    .then((msg)=>{
+        return res.status(201).json({msg:msg});
+        // console.log(msg)
+    })
+    .catch((err)=>{
+        console.log(err);
+    })
 }
