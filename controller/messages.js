@@ -18,6 +18,7 @@ exports.addMessage=async(req,res,next)=>{
 exports.getMessage=async(req,res,next)=>{
 
     await messages.findAll({
+        order:[['id','ASC']],
         include:[{
             model:users,
             required:true,
