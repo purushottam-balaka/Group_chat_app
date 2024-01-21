@@ -1,18 +1,32 @@
-setInterval(async()=>{
 
 
-
-// window.addEventListener('DOMContentLoaded',async()=>{
+window.addEventListener('DOMContentLoaded',async()=>{
     try{
+        
         const token=localStorage.getItem('token');
-        const response=await axios.get('http://localhost:9000/get_message',{headers:{'Authorization':token}})
-        //console.log(response)
-        showMessage(response.data.msg);
+        let lastId=localStorage.getItem('lastId');
+        // console.log(lastId)
+        const allMsgs=[]
+        const response=await axios.get('http://localhost:9000/get_message',lastId,{headers:{'Authorization':token}})
+            response.data.msg.forEach(ele => {
+                allMsgs.push(ele)
+                lastId=ele.id;
+            });
+            const allMsgsStrigified=JSON.stringify(allMsgs)
+            localStorage.setItem('message',allMsgsStrigified)
+            localStorage.setItem('lastId',lastId);
+            showMessage();
     }catch(err){
         console.log(err);
     }
-// })
-},1000)
+})
+
+// setInterval(async() => {
+//     const token=localStorage.getItem('token');
+//     const response=await axios.get('http://localhost:9000/get_message',{headers:{'Authorization':token}})
+//     //console.log(response)
+//     showMessage(response.data.msg);
+// }, 1000);
 
 async function save_message(e){
     try{
@@ -34,13 +48,16 @@ async function save_message(e){
     }
 }
 
-function showMessage(item){
+function showMessage(){
     const parentEle=document.getElementById('list');
     parentEle.innerHTML=''
+    const i=localStorage.getItem('message')
+    const item=JSON.parse(i)
+    console.log(item)
     for(let i=0;i<item.length;i++){
     const childEle=document.createElement('li');
     childEle.setAttribute('class','list-group-item');
-    childEle.textContent=item[i].user.name +' : '+ item[i].message;
+    childEle.textContent=item[i].name +' : '+ item[i].message;
     parentEle.append(childEle)
     }
 }

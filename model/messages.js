@@ -8,6 +8,10 @@ const messages=db.define('messages',{
         primaryKey:true,
         autoIncrement:true,
     },
+    name:{
+        type:sequelize.STRING,
+        allowNull:false,
+    },
     message:{
         type:sequelize.STRING,
         allowNull:false,
