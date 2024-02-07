@@ -5,12 +5,14 @@ const {Op}=require('sequelize')
 exports.addMessage=async(req,res,next)=>{
     try{
         const message=req.body.message;
+        const gId=req.body.gId;
+        //console.log('message',req.body)
         await messages.create({
             message:message,
             name:req.user.name,
-            userId:req.user.id,
+            groupId:gId,
         })
-        return res.status(201).json({success:true});
+        return res.status(201).json();
     }catch(err){
         console.log(err)
     }
@@ -20,7 +22,7 @@ exports.addMessage=async(req,res,next)=>{
 exports.getMessage=async(req,res,next)=>{
     try{
     const lastId=req.body.lastId || 0;
-    console.log('lastid',lastId)
+    //console.log('lastid',lastId)
     const msg=await messages.findAll({
         where:{id:{[Op.gt]:lastId}},
         attributes:['id','name','message'],

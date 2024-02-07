@@ -8,27 +8,41 @@
             <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     </head>
     <body>
-        <!-- <div class="position-relative"> -->
-            <div class="text-center">
-                <h3>Chat App</h3>
+        <div class="text-center">
+            <h3>Chat App</h3>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-3">
+                    <div class="container">
+                            <button class="btn btn-info" onclick="create_a_group()">Create a group</button>
+
+                        <h3>Groups</h3> 
+                        <ul id="group-list">
+                            
+                        </ul>
+                    </div>
+                    
+                </div>
+                <div class="col-sm-9">
+                    <ul id='grp-msg-list'>
+
+                    </ul >
+                    </div>
+                <div class="navbar navbar-default navbar-fixed-bottom">
+                <div class="container">
+                    <form onsubmit="save_message(event)">
+                        <label for="message">Enter your message</label>
+                        <input type="text" id="message" class="form-control">
+                        <button type="submit" class="btn btn-primary">Send</button>
+                    </form>
+        
+                </div>
+                </div>
+                </div>
             </div>
-        <div class="container">
-            <ul id="list" class="list-group">
-
-            </ul>
         </div>
-           
-        <!-- </div> -->
-        <div class="navbar navbar-default navbar-fixed-bottom">
-        <div class="container">
-            <form onsubmit="save_message(event)">
-                <label for="message">Enter your message</label>
-                <input type="text" id="message" class="form-control">
-                <button type="submit" class="btn btn-primary">Send</button>
-            </form>
-
-        </div>
-        </div>
+            
         <script src="./chat.js"></script>
     </body>
 </html>
