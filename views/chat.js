@@ -75,9 +75,11 @@ function create_a_group(){
 function showGroups(ele){
     const parentEle=document.getElementById('group-list')
     parentEle.innerHTML=''
+    document.getElementById('group-heading').innerHTML='Groups : '
     ele.forEach(element => {
         // console.log('element',element)
         const childEle=document.createElement('li');
+        childEle.setAttribute('class','list-group-item')
         childEle.textContent=element.group.group_name;
         childEle.id=element.group.id;
         
@@ -99,19 +101,24 @@ function showGroups(ele){
                 gId:childEle.id,
             }
             const li=document.createElement('li');
-            li.textContent=`Group name :  ${childEle.textContent}       `
+            li.setAttribute('class','list-group-item')
+            li.textContent=`Group name :  ${childEle.textContent}   `;
             parentElem.appendChild(li)
             const button=document.createElement('button');
+            button.setAttribute('class','btn btn-info');
             button.textContent='Add a user';
 
             li.appendChild(button);
             const delBut=document.createElement('button');
             delBut.textContent='Delete user'
+            delBut.setAttribute('class','btn btn-danger');
             li.appendChild(delBut)
             button.onclick=async()=>{
                 let inp=document.createElement('input');
                 inp.type='text';
+                inp.setAttribute('class','list-group-item')
                 let but=document.createElement('button');
+                but.setAttribute('class','btn btn-info')
                 but.textContent=' Add ';
                 but.id='add-but'
                 parentElem.appendChild(inp);
@@ -139,8 +146,10 @@ function showGroups(ele){
                 // console.log('delete')
                 let inp=document.createElement('input');
                 inp.type='text';
+                inp.setAttribute('class','list-group-item')
                 let but=document.createElement('button');
                 but.textContent=' Delete ';
+                but.setAttribute('class','btn btn-danger')
                 but.id='del-but'
                 parentElem.appendChild(inp);
                 parentElem.appendChild(but) 
@@ -166,6 +175,7 @@ function showGroups(ele){
             const grpMsgs=await axios.post('http://localhost:9000/group_msgs',grpId);
                 grpMsgs.data.grpMsgs.forEach(ele =>{
                     const childElem=document.createElement('li');
+                    childElem.setAttribute('class','list-group-item list-group-item-info');
                     childElem.textContent=ele.name +' : ' +ele.message;
                     // console.log('childId',parentEle)
                     parentElem.appendChild(childElem);
@@ -180,12 +190,15 @@ function showGroups(ele){
         element.forEach(ele => {
             const childEle=document.createElement('li')
             childEle.textContent=ele.user.name+'  -   ';
+            childEle.setAttribute('class','list-group-item');
+            childEle
             if (ele.isAdmin == 1){
                 var subChiEle=document.createTextNode(' ');
                 subChiEle.textContent='Admin'
             }
             else{
                 var subChiEle=document.createElement('button')
+                subChiEle.setAttribute('class','btn btn-info')
                 subChiEle.id=ele.user.id;
                 subChiEle.value=ele.groupId;
                 subChiEle.textContent='Make Admin'
