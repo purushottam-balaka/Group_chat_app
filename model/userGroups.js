@@ -7,6 +7,9 @@ const UserGroups=db.define('userGroups',{
         type:sequelize.INTEGER,
         autoIncrement:true,
         primaryKey:true,
+    },
+    isAdmin:{
+        type:sequelize.STRING,
     }
 })
 

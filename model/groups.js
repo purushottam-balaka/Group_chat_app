@@ -12,6 +12,7 @@ const groups=db.define('groups',{
     group_name:{
         type:sequelize.STRING,
         allowNull:false,
+        unique:true,
     },
 });
 

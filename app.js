@@ -20,7 +20,8 @@ const userGroups=require('./model/userGroups');
 
 const cors=require('cors');
 
-const alert=require('alert')
+const alert=require('alert');
+const UserGroups = require('./model/userGroups');
 
 app.use(cors());
 
@@ -40,7 +41,9 @@ users.hasMany(messages);
 messages.belongsTo(users);
 
 users.belongsToMany(groups,{ through:userGroups });
-groups.belongsToMany(users,{  through:userGroups });
+groups.belongsToMany(users,{ through:userGroups });
+UserGroups.belongsTo(groups)
+userGroups.belongsTo(users);
 
 groups.hasMany(messages);
 messages.belongsTo(groups);

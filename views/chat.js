@@ -1,10 +1,9 @@
 
-
 window.addEventListener('DOMContentLoaded',async()=>{
     try{
         const token=localStorage.getItem('token')
         const grp=await axios.get('http://localhost:9000/groups',{headers:{'Authorization':token}})
-        //console.log('group',grp)
+        // console.log('group',grp)
         showGroups(grp.data.groups);
 
 
@@ -75,28 +74,144 @@ function create_a_group(){
 
 function showGroups(ele){
     const parentEle=document.getElementById('group-list')
+    parentEle.innerHTML=''
     ele.forEach(element => {
         // console.log('element',element)
         const childEle=document.createElement('li');
-        childEle.textContent=element.group_name;
-        childEle.id=element.id;
+        childEle.textContent=element.group.group_name;
+        childEle.id=element.group.id;
         
         parentEle.appendChild(childEle);
         childEle.onclick=async()=>{
+            const id={
+                id:childEle.id,
+            }
+            const grpMembers=document.getElementById('grp-members')
+            const mem=await axios.post('http://localhost:9000/grp_members',id)
+            // console.log(mem)
+            // showGropMembers(mem.data.users.isAdmin,mem.data.users.user.name)
+            showGropMembers(mem.data.users)
+
             localStorage.setItem('id',childEle.id)
-            const parentEle=document.getElementById('grp-msg-list');
-            parentEle.innerHTML=''
+            const parentElem=document.getElementById('grp-msg-list');
+            parentElem.innerHTML=''
             const grpId={
                 gId:childEle.id,
             }
-           
+            const li=document.createElement('li');
+            li.textContent=`Group name :  ${childEle.textContent}       `
+            parentElem.appendChild(li)
+            const button=document.createElement('button');
+            button.textContent='Add a user';
+
+            li.appendChild(button);
+            const delBut=document.createElement('button');
+            delBut.textContent='Delete user'
+            li.appendChild(delBut)
+            button.onclick=async()=>{
+                let inp=document.createElement('input');
+                inp.type='text';
+                let but=document.createElement('button');
+                but.textContent=' Add ';
+                but.id='add-but'
+                parentElem.appendChild(inp);
+                parentElem.appendChild(but) 
+                but.onclick=async()=>{
+                    const name={
+                        uname:inp.value,
+                        gId:childEle.id,
+                    }
+                    const token=localStorage.getItem('token')
+                    await axios.post('http://localhost:9000/add_more_users',name,{headers:{'Authorization':token}})
+                    .then((resp)=>{
+                        if(resp.status==200){
+                        but.style.background='lightgreen',
+                        but.textContent='Added'
+                            }
+                        else{
+                            but.style.background='red',
+                            but.textContent='User is not an Admin'
+                        }
+                    })
+                    }          
+            }
+            delBut.onclick=()=>{
+                // console.log('delete')
+                let inp=document.createElement('input');
+                inp.type='text';
+                let but=document.createElement('button');
+                but.textContent=' Delete ';
+                but.id='del-but'
+                parentElem.appendChild(inp);
+                parentElem.appendChild(but) 
+                but.onclick=async()=>{
+                    const name={
+                        uname:inp.value,
+                        gId:childEle.id,
+                    }
+                    const token=localStorage.getItem('token')
+                    await axios.post('http://localhost:9000/delete_group_user',name,{headers:{'Authorization':token}})
+                    .then((resp)=>{
+                        if (resp.status==200){
+                        but.style.background='lightgreen',
+                        but.textContent='Deleted'
+                        }
+                        else{
+                            but.style.background='red',
+                            but.textContent='User is an Admin '
+                        }
+                    })
+                    } 
+            }
             const grpMsgs=await axios.post('http://localhost:9000/group_msgs',grpId);
                 grpMsgs.data.grpMsgs.forEach(ele =>{
-                    const childEle=document.createElement('li');
-                    childEle.textContent=ele.name +' : ' +ele.message;
+                    const childElem=document.createElement('li');
+                    childElem.textContent=ele.name +' : ' +ele.message;
                     // console.log('childId',parentEle)
-                    parentEle.appendChild(childEle);
+                    parentElem.appendChild(childElem);
                 })
         }
     });   
+
+    function showGropMembers(element){
+        const parentEle=document.getElementById('grp-members');
+        document.getElementById('grp-members-heading').innerHTML='Group members'
+        parentEle.innerHTML=''
+        element.forEach(ele => {
+            const childEle=document.createElement('li')
+            childEle.textContent=ele.user.name+'  -   ';
+            if (ele.isAdmin == 1){
+                var subChiEle=document.createTextNode(' ');
+                subChiEle.textContent='Admin'
+            }
+            else{
+                var subChiEle=document.createElement('button')
+                subChiEle.id=ele.user.id;
+                subChiEle.value=ele.groupId;
+                subChiEle.textContent='Make Admin'
+                subChiEle.onclick=async()=>{
+                    const data={
+                        uId:subChiEle.id,
+                        gId:subChiEle.value,
+                    }
+                    const token=localStorage.getItem('token');
+                    await axios.post('http://localhost:9000/make_admin',data,{headers:{'Authorization':token}})
+                    .then((resp)=>{
+                        if(resp.status==200){
+                        subChiEle.style.background='lightgreen';
+                        subChiEle.textContent='Admin';
+                        }
+                        else{
+                            subChiEle.style.background='red';
+                            subChiEle.textContent='User is not an Admin';
+                        }
+                    })
+                }
+            }
+            parentEle.appendChild(childEle)
+            childEle.appendChild(subChiEle)
+        });
+
+    }
+
 }
