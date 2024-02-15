@@ -1,4 +1,7 @@
-const express=require('express')
+const express=require('express');
+
+const { createServer } = require("http");
+const { Server } = require("socket.io");
 
 const app=express();
 
@@ -18,10 +21,14 @@ const groups=require('./model/groups');
 
 const userGroups=require('./model/userGroups');
 
+require('dotenv');
+
 const cors=require('cors');
 
 const alert=require('alert');
 const UserGroups = require('./model/userGroups');
+
+const websocketService=require('./services/websocketService')
 
 app.use(cors());
 
@@ -48,6 +55,12 @@ userGroups.belongsTo(users);
 groups.hasMany(messages);
 messages.belongsTo(groups);
 
-app.listen(9000,()=>{
-    console.log('Running on Port 9000');
+const server=app.listen(9000)
+const io = new Server(server);
+  
+io.on("connection",(socket)=>{
+    // console.log('socket id',socket.id)
+    socket.on('chatmsg',(msg)=>{
+        io.emit('chatmsg',msg)
+    })
 });

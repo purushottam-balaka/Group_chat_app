@@ -21,5 +21,7 @@ const authentication=require('../middleware/authenticate')
  router.post('/make_admin',authentication.authentication,groupsController.makeAdmin);
 
  router.post('/delete_group_user',authentication.authentication,groupsController.deleteGroupUser);
+ 
+ router.post('/delete_group',authentication.authentication,groupsController.deleteGroup);
 
 module.exports=router;

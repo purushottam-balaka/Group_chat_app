@@ -69,7 +69,7 @@ exports.getGroups=async(req,res,next)=>{
 
 exports.groupMsgs=async(req,res,next)=>{
     try{
-        console.log('group msgs',req.body)
+        // console.log('group msgs',req.body)
         const gId=req.body.gId;
         const grpMsgs=await messages.findAll({where:{groupId:gId}})
             return res.status(200).json({grpMsgs:grpMsgs});
@@ -183,5 +183,36 @@ exports.deleteGroupUser=async(req,res,next)=>{
         
     }catch(err){
         console.log(err);
+    }
+}
+
+exports.deleteGroup=async(req,res,next)=>{
+    try{
+        //console.log(req.body);
+        const gId=req.body.gId;
+
+        const ad=await userGroups.findOne({
+            where:{
+                userId:req.user.id,
+                groupId:gId
+            }
+        })
+        if(ad.isAdmin==1){
+                await groups.destroy({where:{id:gId}})
+                await userGroups.destroy({where:{groupId:gId}})
+                await messages.destroy({where:{groupId:gId}})
+                .then(()=>{
+                    return res.status(200).json();
+                })
+                .catch((err)=>{
+                    console.log(err)
+                })
+            }
+        else{
+            return res.status(201).json();
+        }
+        
+    }catch(err){
+        console.log(err)
     }
 }

@@ -13,6 +13,9 @@ async function createGroup(e){
         console.log(err)
     }
 }
+document.getElementById('done').onclick=()=>{
+    location.href='./chat.html';
+}
 
 function showUser(element,g_id){
     document.getElementById('paragraph').innerHTML='Add users'
@@ -20,6 +23,7 @@ function showUser(element,g_id){
     console.log('show',element)
     element.forEach(ele => {
         const childEle=document.createElement('li');
+        childEle.setAttribute('class','list-group-item')
         childEle.textContent=ele.name+'   ';
         const addBut=document.createElement('button')
         addBut.id=ele.id;
@@ -44,4 +48,11 @@ function showUser(element,g_id){
 
         }
     });
+    // const subChildBut=document.createElement('button');
+    // subChildBut.textContent='Done';
+    // subChildBut.setAttribute('class','btn btn-info');
+    // parentEle.appendChild(subChildBut);
+    // subChildBut.onclick=async()=>{
+    //     location.href='./chat.html'
+    // }
 }

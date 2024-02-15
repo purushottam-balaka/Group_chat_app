@@ -7,12 +7,17 @@ exports.addMessage=async(req,res,next)=>{
         const message=req.body.message;
         const gId=req.body.gId;
         //console.log('message',req.body)
+        const data={
+            message:message,
+            gId:gId,
+            name:req.user.name
+        }
         await messages.create({
             message:message,
             name:req.user.name,
             groupId:gId,
-        })
-        return res.status(201).json();
+        });
+        return res.status(200).json({info:data});
     }catch(err){
         console.log(err)
     }

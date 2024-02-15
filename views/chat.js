@@ -43,8 +43,8 @@ async function save_message(e){
         const token=localStorage.getItem('token');
         await axios.post('http://localhost:9000/add_message',data,{headers:{'Authorization':token}})
         .then((resp)=>{
-            window.location.reload();
-            // console.log('reloaded')
+            //window.location.reload();
+            socket.emit('chatmsg',resp.data.info);
         }).catch((err)=>{
             console.log(err)
         })
@@ -113,6 +113,10 @@ function showGroups(ele){
             delBut.textContent='Delete user'
             delBut.setAttribute('class','btn btn-danger');
             li.appendChild(delBut)
+            const delGrp=document.createElement('button');
+            delGrp.textContent='Delete this group'
+            delGrp.setAttribute('class','btn btn-danger');
+            li.appendChild(delGrp)
             button.onclick=async()=>{
                 let inp=document.createElement('input');
                 inp.type='text';
@@ -137,7 +141,7 @@ function showGroups(ele){
                             }
                         else{
                             but.style.background='red',
-                            but.textContent='User is not an Admin'
+                            but.textContent='You are  not an Admin'
                         }
                     })
                     }          
@@ -167,11 +171,32 @@ function showGroups(ele){
                         }
                         else{
                             but.style.background='red',
-                            but.textContent='User is an Admin '
+                            but.textContent='You are not an Admin '
                         }
                     })
-                    } 
-            }
+                }
+                }
+
+            delGrp.onclick=async()=>{
+                console.log('delete group')
+                const id=localStorage.getItem('id')
+                const data={
+                    gId:id
+                }
+                const token=localStorage.getItem('token')
+                await axios.post('http://localhost:9000/delete_group',data,{headers:{'Authorization':token}})
+                .then((resp)=>{
+                    if (resp.status==200){
+                    delGrp.style.background='lightgreen',
+                    delGrp.textContent='Group deleted'
+                    }
+                    else{
+                        delGrp.style.background='blue',
+                        delGrp.textContent='You are not an Admin '
+                    }
+                })
+            } 
+
             const grpMsgs=await axios.post('http://localhost:9000/group_msgs',grpId);
                 grpMsgs.data.grpMsgs.forEach(ele =>{
                     const childElem=document.createElement('li');
@@ -216,7 +241,7 @@ function showGroups(ele){
                         }
                         else{
                             subChiEle.style.background='red';
-                            subChiEle.textContent='User is not an Admin';
+                            subChiEle.textContent='You are not an Admin';
                         }
                     })
                 }
@@ -228,3 +253,14 @@ function showGroups(ele){
     }
 
 }
+const socket = io();
+
+socket.on('chatmsg', (data) => {
+    // console.log('data',data)
+    const parentEle=document.getElementById('grp-msg-list');
+    const childEle=document.createElement('li');
+    childEle.setAttribute('class','list-group-item list-group-item-info')
+    childEle.textContent=data.name+' : '+data.message
+    parentEle.appendChild(childEle)
+    
+})
